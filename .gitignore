@@ -1,4 +1,8 @@
-# Created by .ignore support plugin (hsz.mobi)
-.gitignore
-.idea/
-blog.iml
+_site/
+.sass-cache/
+*.DS_Store
+.idea
+*.swp
+.Trashes
+
+/blog.iml
