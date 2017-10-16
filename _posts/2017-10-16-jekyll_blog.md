@@ -173,6 +173,7 @@ $ jekyll serve
 ```
 在浏览器里输入： http://localhost:4000，就可以看到效果了:
 ![](/images/posts/jekyll/example.jpg)
+
 当然，这只是在本地做的预览，还没有发布到gitHub上呢！
 
 
