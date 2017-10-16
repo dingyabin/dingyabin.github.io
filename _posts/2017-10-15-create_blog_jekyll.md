@@ -38,17 +38,10 @@ Jekyll可以配合第三方服务例如： Disqus（评论）、多说(评论) �
 >* 安装 jekyll
 jekyll的安装方法很多，可根据官方的指导安装 [官方的指导安装](http://jekyllrb.com/docs/installation)
 
->* 进入博客目录
+>* 进入博客目录:  $ cd myBlog
 
-```
-$ cd myBlog
-```
+>* 启动本地服务:  $ jekyll serve
 
->* 启动本地服务
-
-```
-$ jekyll serve
-```
 
 在浏览器里输入： http://localhost:4000，就可以看到你的博客效果了。
 
@@ -101,6 +94,7 @@ Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 
 进入该目录，创建一个default.html文件，作为Blog的默认模板。并在该文件中填入以下内容。
 
 ```
+{% raw %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -113,6 +107,7 @@ Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 
 
 </body>
 　　</html>
+ {% endraw %}
 ```
 Jekyll使用Liquid模板语言，`{{ page.title }}`表示文章标题，`{{ content }}`表示文章内容，更多模板变量请参考官方文档。
 目录结构变成：
@@ -122,3 +117,102 @@ Jekyll使用Liquid模板语言，`{{ page.title }}`表示文章标题，`{{ cont
 　　|--　_layouts
 　　|　　　|--　default.html
 ```
+
+
+#### 第四步，创建文章。
+回到项目根目录，创建一个`_posts`目录，用于存放blog文章。
+> $ mkdir _posts
+
+进入该目录，创建第一篇文章。文章就是普通的文本文件，文件名假定为`2017-10-16-hello-world.html`。(注意，文件名必须为`年-月-日-文章标题.后缀名`的格式。如果网页代码采用html格式，后缀名为html；如果采用markdown格式，后缀名为md。）
+在该文件中，填入以下内容：（注意，行首不能有空格）
+```
+{% raw %}
+---
+layout: default
+title: 你好，世界
+---
+<h2>{{ page.title }}</h2>
+<p>我的第一篇文章</p>
+<p>{{ page.date | date_to_string }}</p>
+{% endraw %}
+```
+
+每篇文章的头部，必须有一个`yaml`文件头，用来设置一些元数据。它用三根短划线"---"，标记开始和结束，里面每一行设置一种元数据。`layout:default`，表示该文章的模板使用_layouts目录下的`default.html`文件；`title: 你好，世界`，表示该文章的标题是"你好，世界"，如果不设置这个值，默认使用嵌入文件名的标题，即`hello world`。
+在`yaml`文件头后面，就是文章的正式内容，里面可以使用模板变量。`{{ page.title }}`就是文件头中设置的`你好，世界`，`{{ page.date }}`则是嵌入文件名的日期（也可以在文件头重新定义date变量,那么会覆盖文件名中的时间），`| date_to_string` 表示将`page.date`变量转化成人类可读的格式。
+目录结构变成：
+```
+ /jekyll_demo
+ 　　|--　_config.yml
+ 　　|--　_layouts
+ 　　|　　　|--　default.html
+ 　　|--　_posts
+ 　　|　　　|--　2017-10-16-hello-world.html
+```
+
+#### 第五步，创建首页。
+有了文章以后，还需要有一个首页。
+回到根目录，创建一个index.html文件，填入以下内容。
+{% raw %}
+```
+{% raw %}
+　　---
+　　layout: default
+　　title: 我的Blog
+　　---
+　　<h2>{{ page.title }}</h2>
+　　<p>最新文章</p>
+　　<ul>
+　　　　{% for post in site.posts %}
+　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+　　　　{% endfor %}
+　　</ul>
+{% endraw %}
+```
+它的Yaml文件头表示，首页使用`default`模板，标题为`我的Blog`。然后，首页使用了`{% for post in site.posts %}`，表示对所有帖子进行一个遍历。
+这里要注意的是，Liquid模板语言规定，输出内容使用两层大括号，单纯的命令使用一层大括号。至于{{site.baseurl}}就是_config.yml中设置的baseurl变量。
+
+目录结构变成：
+```
+　/jekyll_demo
+　　　|--　_config.yml
+　　　|--　_layouts
+　　　|　　　|--　default.html
+　　　|--　_posts
+　　　|　　　|--　2017-10-16-hello-world.html
+　　　|--　index.html
+```
+
+至此，本地博客的编写已经完成，在`jekyll_demo`目录下执行：
+```
+$ jekyll serve
+```
+在浏览器里输入： http://localhost:4000，就可以看到效果了:
+![](/images/posts/jekyll/example.jpg)
+
+当然，这只是在本地做的预览，还没有发布到gitHub上呢！
+
+
+#### 第六步，发布内容。
+在GitHub上创建一个新的仓库（`repository`），仓库的名字类似于：`userName.github.io`，`userName`和你创建的Git账户名字相一致(其实仓库的名字不一定非要这么定义，这涉及到[gutHub pages的类型](https://help.github.com/articles/user-organization-and-project-pages)有兴趣的同学可以看看)。
+接下来把项目push到刚才新建的远程仓库上:
+
+```
+$ git add .
+$ git commit -m "first post"
+$ git remote add origin git@github.com:userName/userName.github.io.git
+$ git push origin master
+```
+上传成功之后，等10分钟左右，访问`http://username.github.io` 就可以看到Blog已经生成了（将username换成你自己的用户名）。
+
+
+#### 第七步，绑定域名。
+首先，购买一个域名，例如：我买的域名是`dingyabin.com`，那么就在仓库的根目录下建立一个文件叫CNAME(没有后缀)。里面写我们买的*二级域名* `www.dingyabin.com`(切记:一个CNAME文件只能填写一个域名)，这样gitHub会将这个域名当作我们仓库的主域名，如果有人访问userName.github.io，就会自动跳转到我们设置的域名。
+
+#### 第八步，配置解析服务器
+到目前为止，我们直接访问自己域名的时候，还不会自动跳转至gitHub上。因为还没有配置解析服务器，废话不多说，上图：
+![](/images/posts/jekyll/DNS_config.png)
+配置完域名解析之后，稍等一会儿，再访问你的域名试试，惊不惊喜，意不意外?
+
+### one more thing
+以上步骤基本上就是在gitHub上搭建博客的基本流程了，当然，例子中的demo比较简单了，如果你想要让自己的博客更炫酷，更好玩，就需要编写更复杂的主题模板了。但其实已经有好多大神已经写好了很多炫酷的模板，并把他们分享了出来，我们只需要把他们down下来，稍作修改，放到自己的项目下面就可以了。
+给大家推荐一个[主题商店](http://jekyllthemes.org/),里面有好多好玩的主题可以挑选！
