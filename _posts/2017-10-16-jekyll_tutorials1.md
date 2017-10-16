@@ -55,7 +55,7 @@ so easy !
 
 ### 目录结构
 　
-Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 你用你最喜欢的标记语言来写文章，可以是 Markdown，也可以是 Textile,或者就是简单的 HTML, 然后 Jekyll 就会帮你套入一个或一系列的布局中。在整个过程中你可以设置URL路径, 你的文本在布局中的显示样式等等。这些都可以通过纯文本编辑来实现，最终生成的静态页面就是你的成品了。
+Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 用你最喜欢的标记语言来写文章，可以是 Markdown，也可以是 Textile,或者就是简单的 HTML, 然后 Jekyll 就会帮你套入一个或一系列的布局中。在整个过程中你可以设置URL路径, 你的文本在布局中的显示样式等等。这些都可以通过纯文本编辑来实现，最终生成的静态页面就是你的成品了。
 
 一个基本的 Jekyll 网站的目录结构一般是像这样的：
 
@@ -67,202 +67,139 @@ Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 
 
 进入 _config.yml 里面，修改成你想看到的信息，重新 jekyll server ，刷新浏览器就可以看到你刚刚修改的信息了。
 
-到此，博客初步搭建算是完成了，
-
-### 博客部署到远端 
-
-　我这里讲的是部署到 Github Page 创建一个 github 账号，然后创建一个跟你账户名一样的仓库，如我的 github 账户名叫 [leopardpan](https://github.com/leopardpan)，我的 github 仓库名就叫 [leopardpan.github.io](https://github.com/leopardpan/leopardpan.github.io)，创建好了之后，把刚才建立的 myBlog 项目 push 到 username.github.io仓库里去（username指的是你的github用户名），检查你远端仓库已经跟你本地 myBlog 同步了，然后你在浏览器里输入 username.github.io ，就可以访问你的博客了。
+到此，博客初步搭建算是完成了。
 
 
-### 编写文章
+### 一个例子
+屁话说了一大堆，下面，举一个实例，演示如何在github上搭建blog，可以跟着一步步做。为了便于理解，这个blog只有最基本的功能。在搭建之前，我们必须已经安装了git，并且有github账户。
 
-　　所有的文章都是 _posts 目录下面，文章格式为 mardown 格式，文章文件名可以是 .mardown 或者 .md。
+#### 第一步，创建项目。
+在你的电脑上，建立一个目录，作为项目的主目录。我们假定，它的名称为jekyll_demo。
+> $ mkdir jekyll_demo
+进入该目录，对该目录进行git初始化。
+> $ cd jekyll_demo
+> $ git init
+以下所有动作，都在该仓库的master分支下完成。
 
-　　编写一篇新文章很简单，你可以直接从 _posts/ 目录下复制一份出来 `2016-10-16-welcome-to-jekyll副本.markdown` ，修改名字为 2016-10-16-article1.markdown ，注意：文章名的格式前面必须为 2016-10-16- ，日期可以修改，但必须为 年-月-日- 格式，后面的 article1 是整个文章的连接 URL，如果文章名为中文，那么文章的连接URL就会变成这样的：http://baixin.io/2015/08/%E6%90%AD%E5/ ， 所以建议文章名最好是英文的或者阿拉伯数字。 双击 2016-10-16-article1.markdown 打开
+#### 第二步，创建设置文件
+在项目根目录下，建立一个名为`_config.yml`的文本文件。它是jekyll的设置文件，我们在里面填入如下内容，其他设置都可以用默认选项，具体解释参见官方网页。
+> baseurl: /jekyll_demo
+目录结构变成：
+>　　/jekyll_demo
+>　　　　|--　_config.yml
+
+#### 第三步，创建模板文件。
+在项目根目录下，创建一个_layouts目录，用于存放模板文件。
+> $ mkdir _layouts
+进入该目录，创建一个default.html文件，作为Blog的默认模板。并在该文件中填入以下内容。
 
 ```
+<!DOCTYPE html>
+<html>
+<head>
+　　<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+　　<title>{{ page.title }}</title>
+</head>
+<body>
 
+　　{{ content }}
+
+</body>
+　　</html>
+```
+Jekyll使用Liquid模板语言，`{{ page.title }}`表示文章标题，`{{ content }}`表示文章内容，更多模板变量请参考官方文档。
+目录结构变成：
+> /jekyll_demo
+>　　|--　_config.yml
+>　　|--　_layouts
+>　　|　　　|--　default.html
+
+#### 第四步，创建文章。
+回到项目根目录，创建一个`_posts`目录，用于存放blog文章。
+> $ mkdir _posts
+进入该目录，创建第一篇文章。文章就是普通的文本文件，文件名假定为`2017-10-16-hello-world.html`。(注意，文件名必须为`年-月-日-文章标题.后缀名`的格式。如果网页代码采用html格式，后缀名为html；如果采用markdown格式，后缀名为md。）
+在该文件中，填入以下内容：（注意，行首不能有空格）
+```
 ---
-layout: post
-title:  "Welcome to Jekyll!"
-date:   2016-10-16 11:29:08 +0800
-categories: jekyll update
+layout: default
+title: 你好，世界
 ---
-
-正文...
-
+<h2>{{ page.title }}</h2>
+<p>我的第一篇文章</p>
+<p>{{ page.date | date_to_string }}</p>
 ```
 
+每篇文章的头部，必须有一个`yaml`文件头，用来设置一些元数据。它用三根短划线"---"，标记开始和结束，里面每一行设置一种元数据。`layout:default`，表示该文章的模板使用_layouts目录下的`default.html`文件；`title: 你好，世界`，表示该文章的标题是"你好，世界"，如果不设置这个值，默认使用嵌入文件名的标题，即`hello world`。
+在`yaml`文件头后面，就是文章的正式内容，里面可以使用模板变量。`{{ page.title }}`就是文件头中设置的`你好，世界`，`{{ page.date }}`则是嵌入文件名的日期（也可以在文件头重新定义date变量,那么会覆盖文件名中的时间），`| date_to_string` 表示将`page.date`变量转化成人类可读的格式。
+目录结构变成：
+> /jekyll_demo
+> 　　|--　_config.yml
+> 　　|--　_layouts
+> 　　|　　　|--　default.html
+> 　　|--　_posts
+> 　　|　　　|--　2017-10-16-hello-world.html
 
-title: 显示的文章名， 如：title: 我的第一篇文章                    
-date:  显示的文章发布日期，如：date: 2016-10-16                          
-categories: tag标签的分类，如：categories: 随笔            
+#### 第五步，创建首页。
+有了文章以后，还需要有一个首页。
+回到根目录，创建一个index.html文件，填入以下内容。
+```
+　　---
+　　layout: default
+　　title: 我的Blog
+　　---
+　　<h2>{{ page.title }}</h2>
+　　<p>最新文章</p>
+　　<ul>
+　　　　{% for post in site.posts %}
+　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+　　　　{% endfor %}
+　　</ul>
+```
+它的Yaml文件头表示，首页使用`default`模板，标题为`我的Blog`。然后，首页使用了`{% for post in site.posts %}`，表示对所有帖子进行一个遍历。
+这里要注意的是，Liquid模板语言规定，输出内容使用两层大括号，单纯的命令使用一层大括号。至于{{site.baseurl}}就是_config.yml中设置的baseurl变量。
 
-注意：文章头部格式必须为上面的，.... 就是文章的正文内容。
+目录结构变成：
+>　/jekyll_demo
+>　　　|--　_config.yml
+>　　　|--　_layouts
+>　　　|　　　|--　default.html
+>　　　|--　_posts
+>　　　|　　　|--　2017-10-16-hello-world.html
+>　　　|--　index.html
 
-我写文章使用的是 Sublime Text2 编辑器，如果你对 markdown 语法不熟悉的话，可以看看[作业部落的教程](https://www.zybuluo.com/) 
+至此，本地博客的编写已经完成，在`jekyll_demo`目录下执行：
+```
+$ jekyll serve
+```
+在浏览器里输入： http://localhost:4000，就可以看到效果了:
+![](/images/posts/jekyll/example.jpg)
+当然，这只是在本地做的预览，还没有发布到gitHub上呢！
 
 
-### 使用我的博客模板
-
-虽然博客部署完成了，你会发现博客太简单不是你想要的，如果你喜欢我的模板的话，可以使用我的模板。
-
-首先你要获取的我博客，[Github项目地址](https://github.com/leopardpan/leopardpan.github.io.git)，你可以直接[点击下载博客](https://github.com/leopardpan/leopardpan.github.io/archive/master.zip)，进去leopardpan.github.io/ 目录下， 使用命令部署本地服务 
+#### 第六步，发布内容。
+在GitHub上创建一个新的仓库（`repository`），仓库的名字类似于：`userName.github.io`，`userName`和你创建的Git账户名字相一致(其实仓库的名字不一定非要这么定义，这涉及到[gutHub pages的类型](https://help.github.com/articles/user-organization-and-project-pages)有兴趣的同学可以看看)。
+接下来把项目push到刚才新建的远程仓库上:
 
 ```
-$ jekyll server   
+$ git add .
+$ git commit -m "first post"
+$ git remote add origin git@github.com:userName/userName.github.io.git
+$ git push origin master
 ```
-
-### 如果你本机没配置过任何jekyll的环境，可能会报错
-
-```
-/Users/xxxxxxxx/.rvm/rubies/ruby-2.2.2/lib/ruby/site_ruby/2.2.0/rubygems/core_ext/kernel_require.rb:54:in `require': cannot load such file -- bundler (LoadError)
-	from /Users/xxxxxxxx/.rvm/rubies/ruby-2.2.2/lib/ruby/site_ruby/2.2.0/rubygems/core_ext/kernel_require.rb:54:in `require'
-	from /Users/xxxxxxxx/.rvm/gems/ruby-2.2.2/gems/jekyll-3.3.0/lib/jekyll/plugin_manager.rb:34:in `require_from_bundler'
-	from /Users/xxxxxxxx/.rvm/gems/ruby-2.2.2/gems/jekyll-3.3.0/exe/jekyll:9:in `<top (required)>'
-	from /Users/xxxxxxxx/.rvm/gems/ruby-2.2.2/bin/jekyll:23:in `load'
-	from /Users/xxxxxxxx/.rvm/gems/ruby-2.2.2/bin/jekyll:23:in `<main>'
-	from /Users/xxxxxxxx/.rvm/gems/ruby-2.2.2/bin/ruby_executable_hooks:15:in `eval'
-	from /Users/xxxxxxxx/.rvm/gems/ruby-2.2.2/bin/ruby_executable_hooks:15:in `<main>'
-
-```
-
-原因： 没有安装 bundler ，执行安装 bundler 命令
-
-```
-
-$ gem install bundler
-
-```
+上传成功之后，等10分钟左右，访问`http://username.github.io` 就可以看到Blog已经生成了（将username换成你自己的用户名）。
 
 
-提示： 
+#### 第七步，绑定域名。
+首先，购买一个域名，例如：我买的域名是`dingyabin.com`，那么就在仓库的根目录下建立一个文件叫CNAME(没有后缀)。里面写我们买的*二级域名* `www.dingyabin.com`(切记:一个CNAME文件只能填写一个域名)，这样gitHub会将这个域名当作我们仓库的主域名，如果有人访问userName.github.io，就会自动跳转到我们设置的域名。
 
-```
-Fetching: bundler-1.13.5.gem (100%)
-Successfully installed bundler-1.13.5
-Parsing documentation for bundler-1.13.5
-Installing ri documentation for bundler-1.13.5
-Done installing documentation for bundler after 5 seconds
-1 gem installed
+#### 第八步，配置解析服务器
+到目前为止，我们直接访问自己域名的时候，还不会自动跳转至gitHub上。因为还没有配置解析服务器，废话不多说，上图：
+![](/images/posts/jekyll/DNS_config.png)
+配置完域名解析之后，稍等一会儿，再访问你的域名试试，惊不惊喜，意不意外?
 
-```
-
-再次执行 $ jekyll server  ，提示
-
-```
-
-Could not find proper version of jekyll (3.1.1) in any of the sources
-Run `bundle install` to install missing gems.
-
-```
-
-跟着提示运行命令
-
-```
-$ bundle install
-```
-
-这个时候你可能会发现 bundle install 运行卡主不动了。
-
-如果很长时间都没任何提示的话，你可以尝试修改 gem 的 source
-
-```
-$ gem sources --remove https://rubygems.org/
-$ gem sources -a http://ruby.taobao.org/
-$ gem sources -l
-*** CURRENT SOURCES ***
-
-http://ruby.taobao.org
-
-```
-
-再次执行命令 $ bundle install，发现开始有动静了
-
-```
-Fetching gem metadata from https://rubygems.org/...........
-Fetching version metadata from https://rubygems.org/..
-Fetching dependency metadata from https://rubygems.org/.
-。。。
-Installing jekyll-watch 1.3.1
-Installing jekyll 3.1.1
-Bundle complete! 3 Gemfile dependencies, 17 gems now installed.
-Use `bundle show [gemname]` to see where a bundled gem is installed.
-
-```
-
-bundler安装完成，后再次启动本地服务 
-
-```
-$ jekyll server
-
-```
-
-继续报错
-
-```
-Configuration file: /Users/tendcloud-Caroline/Desktop/leopardpan.github.io/_config.yml
-  Dependency Error: Yikes! It looks like you don't have jekyll-sitemap or one of its dependencies installed. In order to use Jekyll as currently configured, you'll need to install this gem. The full error message from Ruby is: 'cannot load such file -- jekyll-sitemap' If you run into trouble, you can find helpful resources at http://jekyllrb.com/help/! 
-jekyll 3.1.1 | Error:  jekyll-sitemap
-
-```
-表示 当前的 jekyll 版本是 3.1.1 ，无法使用 jekyll-sitemap 
-
-解决方法有两个
-
-> 1、打开当前目录下的 _config.yml 文件，把 gems: [jekyll-paginate,jekyll-sitemap] 换成 gems: [jekyll-paginate] ，也就是去掉jekyll-sitemap。
-
-> 2、升级 jekyll 版本，我当前的是 jekyll 3.1.2 。
-
-修改完成后保存配置，再次执行
-
-```
-$ jekyll server
-
-```
-提示
-
-```
-Configuration file: /Users/baixinpan/Desktop/OpenSource/Mine/Page-Blog/leopardpan.github.io-github/_config.yml
-            Source: /Users/baixinpan/Desktop/OpenSource/Mine/Page-Blog/leopardpan.github.io-github
-       Destination: /Users/baixinpan/Desktop/OpenSource/Mine/Page-Blog/leopardpan.github.io-github/_site
- Incremental build: disabled. Enable with --incremental
-      Generating... 
-                    done in 0.901 seconds.
- Auto-regeneration: enabled for '/Users/baixinpan/Desktop/OpenSource/Mine/Page-Blog/leopardpan.github.io-github'
-Configuration file: /Users/baixinpan/Desktop/OpenSource/Mine/Page-Blog/leopardpan.github.io-github/_config.yml
-    Server address: http://127.0.0.1:4000/
-  Server running... press ctrl-c to stop.
-
-```
-
-表示本地服务部署成功。
-
-在浏览器输入 [127.0.0.1:4000](127.0.0.1:4000) ， 就可以看到[baixin.io](http://baixin.io)博客效果了。
-
-### 修改成你自己的博客
-
->* 如果你想使用我的模板请把 _posts/ 目录下的文章都去掉。
->* 修改 _config.yml 文件里面的内容为你自己的。
-
-然后使用 git push 到你自己的仓库里面去，检查你远端仓库，在浏览器输入 username.github.io 就会发现，你有一个漂亮的主题模板了。      
-
-
-#### 【 如果想修改博客样式却不知道怎么修改，可以直接在评论里给我提问 】
-
-### 为什么要是用 Jekyll
-
-使用了 Jekyll 你会发现如果你想使用多台电脑发博客都很方便，只要把远端 github 仓库里的博客 clone 下来，写文章后再提交就可以了，Hexo 由于远端提交的是静态网页，所有无法直接写 Markdown 的文章。如果你想看 Hexo 搭建博客，可以看看我的另一篇[HEXO搭建个人博客](http://baixin.io/2015/08/HEXO%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/)的教程。
-
-如果你在搭建博客遇到问题，可以在[原文博客](http://baixin.io/2016/10/jekyll_tutorials1/)的评论里给我提问。
-
-后面会继续介绍，在我的博客基础上，如何修改成你自己喜欢的 Style，欢迎继续关注我博客的更新。
-
-
-### Q&A 
-
-> 问题：最近很多朋友使用我的模板报警告：The CNAME `baixin.io` is already taken 
-> 解决：把CNAME里面的baixin.io修改成你自己的域名，如果你暂时没有域名，CNAME里面就什么都不用谢。（之前没人反馈过这个问题，应该是github page最近才最的限制。）
+### one more thing
+以上步骤基本上就是在gitHub上搭建博客的基本流程了，当然，例子中的demo比较简单了，如果你想要让自己的博客更炫酷，更好玩，就需要编写更复杂的主题模板了。但其实已经有好多大神已经写好了很多炫酷的模板，并把他们分享了出来，我们只需要把他们down下来，稍作修改，放到自己的项目下面就可以了。
+给大家推荐一个[主题商店](http://jekyllthemes.org/),里面有好多好玩的主题可以挑选！
 
 
 
