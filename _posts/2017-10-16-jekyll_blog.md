@@ -86,8 +86,8 @@ Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 
 > baseurl: /jekyll_demo
 目录结构变成：
 ```
->　　/jekyll_demo
->　　　　|--　_config.yml
+　　/jekyll_demo
+　　　　|--　_config.yml
 ```
 
 #### 第三步，创建模板文件。
@@ -112,10 +112,10 @@ Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 
 Jekyll使用Liquid模板语言，`{{ page.title }}`表示文章标题，`{{ content }}`表示文章内容，更多模板变量请参考官方文档。
 目录结构变成：
 ```
-> /jekyll_demo
->　　|--　_config.yml
->　　|--　_layouts
->　　|　　　|--　default.html
+ /jekyll_demo
+　　|--　_config.yml
+　　|--　_layouts
+　　|　　　|--　default.html
 ```
 
 #### 第四步，创建文章。
@@ -137,12 +137,12 @@ title: 你好，世界
 在`yaml`文件头后面，就是文章的正式内容，里面可以使用模板变量。`{{ page.title }}`就是文件头中设置的`你好，世界`，`{{ page.date }}`则是嵌入文件名的日期（也可以在文件头重新定义date变量,那么会覆盖文件名中的时间），`| date_to_string` 表示将`page.date`变量转化成人类可读的格式。
 目录结构变成：
 ```
-> /jekyll_demo
-> 　　|--　_config.yml
-> 　　|--　_layouts
-> 　　|　　　|--　default.html
-> 　　|--　_posts
-> 　　|　　　|--　2017-10-16-hello-world.html
+ /jekyll_demo
+ 　　|--　_config.yml
+ 　　|--　_layouts
+ 　　|　　　|--　default.html
+ 　　|--　_posts
+ 　　|　　　|--　2017-10-16-hello-world.html
 ```
 
 #### 第五步，创建首页。
@@ -166,13 +166,13 @@ title: 你好，世界
 
 目录结构变成：
 ```
->　/jekyll_demo
->　　　|--　_config.yml
->　　　|--　_layouts
->　　　|　　　|--　default.html
->　　　|--　_posts
->　　　|　　　|--　2017-10-16-hello-world.html
->　　　|--　index.html
+　/jekyll_demo
+　　　|--　_config.yml
+　　　|--　_layouts
+　　　|　　　|--　default.html
+　　　|--　_posts
+　　　|　　　|--　2017-10-16-hello-world.html
+　　　|--　index.html
 ```
 
 至此，本地博客的编写已经完成，在`jekyll_demo`目录下执行：
