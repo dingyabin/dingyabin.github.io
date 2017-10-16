@@ -40,7 +40,7 @@ ga:
 # 《--------------- 下面的信息可以自行选择是否修改 ------------------------》
 
 #url的风格，采用默认风格，增加被爬虫爬取的几率
-#permalink: /:year/:month/:title/
+permalink: /:year/:month/:title/
 
 # Format
 highlighter: rouge
