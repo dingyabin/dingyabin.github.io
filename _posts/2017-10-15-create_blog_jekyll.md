@@ -128,7 +128,7 @@ Jekyll使用Liquid模板语言，`{ { page.title } }`表示文章标题，`{ { c
 有了文章以后，还需要有一个首页。
 回到根目录，创建一个index.html文件，填入以下内容。
 
-它的Yaml文件头表示，首页使用`default`模板，标题为`我的Blog`。然后，首页使用了`{% raw %} {% for post in site.posts %} {% endraw %}`，表示对所有帖子进行一个遍历。
+它的Yaml文件头表示，首页使用`default`模板，标题为`我的Blog`。然后，首页使用了`for post in site.posts`，表示对所有帖子进行一个遍历。
 这里要注意的是，Liquid模板语言规定，输出内容使用两层大括号，单纯的命令使用一层大括号。至于{ {site.baseurl} }就是_config.yml中设置的baseurl变量。
 
 目录结构变成：
