@@ -85,8 +85,10 @@ Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 
 在项目根目录下，建立一个名为`_config.yml`的文本文件。它是jekyll的设置文件，我们在里面填入如下内容，其他设置都可以用默认选项，具体解释参见官方网页。
 > baseurl: /jekyll_demo
 目录结构变成：
+```
 >　　/jekyll_demo
 >　　　　|--　_config.yml
+```
 
 #### 第三步，创建模板文件。
 在项目根目录下，创建一个_layouts目录，用于存放模板文件。
@@ -109,10 +111,12 @@ Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 
 ```
 Jekyll使用Liquid模板语言，`{{ page.title }}`表示文章标题，`{{ content }}`表示文章内容，更多模板变量请参考官方文档。
 目录结构变成：
+```
 > /jekyll_demo
 >　　|--　_config.yml
 >　　|--　_layouts
 >　　|　　　|--　default.html
+```
 
 #### 第四步，创建文章。
 回到项目根目录，创建一个`_posts`目录，用于存放blog文章。
@@ -132,12 +136,14 @@ title: 你好，世界
 每篇文章的头部，必须有一个`yaml`文件头，用来设置一些元数据。它用三根短划线"---"，标记开始和结束，里面每一行设置一种元数据。`layout:default`，表示该文章的模板使用_layouts目录下的`default.html`文件；`title: 你好，世界`，表示该文章的标题是"你好，世界"，如果不设置这个值，默认使用嵌入文件名的标题，即`hello world`。
 在`yaml`文件头后面，就是文章的正式内容，里面可以使用模板变量。`{{ page.title }}`就是文件头中设置的`你好，世界`，`{{ page.date }}`则是嵌入文件名的日期（也可以在文件头重新定义date变量,那么会覆盖文件名中的时间），`| date_to_string` 表示将`page.date`变量转化成人类可读的格式。
 目录结构变成：
+```
 > /jekyll_demo
 > 　　|--　_config.yml
 > 　　|--　_layouts
 > 　　|　　　|--　default.html
 > 　　|--　_posts
 > 　　|　　　|--　2017-10-16-hello-world.html
+```
 
 #### 第五步，创建首页。
 有了文章以后，还需要有一个首页。
@@ -159,6 +165,7 @@ title: 你好，世界
 这里要注意的是，Liquid模板语言规定，输出内容使用两层大括号，单纯的命令使用一层大括号。至于{{site.baseurl}}就是_config.yml中设置的baseurl变量。
 
 目录结构变成：
+```
 >　/jekyll_demo
 >　　　|--　_config.yml
 >　　　|--　_layouts
@@ -166,6 +173,7 @@ title: 你好，世界
 >　　　|--　_posts
 >　　　|　　　|--　2017-10-16-hello-world.html
 >　　　|--　index.html
+```
 
 至此，本地博客的编写已经完成，在`jekyll_demo`目录下执行：
 ```
