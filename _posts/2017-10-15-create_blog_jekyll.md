@@ -72,7 +72,7 @@ Jekyll 的核心其实是一个文本转换引擎。它的概念其实就是： 
 > $ mkdir jekyll_demo
 
 进入该目录，对该目录进行git初始化。
-> $ cd jekyll_demo
+> $ cd jekyll_demo  
 > $ git init
 
 以下所有动作，都在该仓库的master分支下完成。
