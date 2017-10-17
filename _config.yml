@@ -10,8 +10,8 @@ url: "http://www.dingyabin.com"
 
 # Comment
 comment:
-     #disqus: leopard
      uyan: 2146731  # 有言id,登录有言官网申请
+     authId: 3018e31b07
 
 # Social
 social:
