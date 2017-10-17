@@ -4,7 +4,7 @@ title: Markdown工具集
 date: 2016-11-20 
 tags: 工具    
 ---
-
+    *本文转载自：[潘柏信的博客](http://baixin.io/2016/11/markdownTool/)*
 
 ### 什么是 Markdown
 
@@ -75,6 +75,4 @@ css 的大部分语法同样可以在 markdown 上使用，但不同的渲染器
 [DeerResume](https://github.com/geekcompany/DeerResume?utm_source=mindstore.io) 程序员专用 MarkDown 简历制作在线工具。                
 
 <br>
-
-转载请注明：[潘柏信的博客](http://baixin) » [Markdown工具集](http://baixin.io/2016/11/markdownTool/)                   
 

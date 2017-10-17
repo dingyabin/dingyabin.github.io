@@ -6,7 +6,7 @@ description: "机器学习入门篇"
 tag: 机器学习  
 
 ---     
-
+*本文转载自：[潘柏信的博客](http://baixin.io/2016/07/MachineLearning_introduce/)*
 ### 通用名词  
 
 #### ML
@@ -35,5 +35,3 @@ tag: 机器学习
 　　在机器学习领域，支持向量机SVM(Support Vector Machine)是一个有监督的学习模型，通常用来进行模式识别、分类、以及回归分析。
 
 <br>
-
-转载请注明：[潘柏信的博客](http://baixin) » [点击阅读原文](http://baixin.io/2016/07/MachineLearning_introduce/)

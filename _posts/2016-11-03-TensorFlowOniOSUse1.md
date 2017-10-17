@@ -4,9 +4,7 @@ title: TensorFlow 在 iOS 平台上的使用(一)
 date: 2016-11-03 
 tags: 机器学习    
 ---
-
-　　距离上次使用 TensorFlow 在iOS平台上做的小 Demo，已经过了四个月了，今天忽然想再看看,发现 Demo 已经不见了，我只能从头在编一次，这次发现编译 iOS 库，简单多了。
-
+    *本文转载自：[潘柏信的博客](http://baixin.io/2016/08/TensorFlowOniOSUse1/)*
 　　tensorflow [下载地址](https://github.com/tensorflow/tensorflow/archive/master.zip)，tensorflow 最近提交的时间：2016-11-03，commit：`7b7c02de56e013482b5fe5ab05e576dc98fe5742` 。
 
 
@@ -55,7 +53,6 @@ autoreconf: automake failed with exit status: 1
 一个小时后。。。　如果编译没出问题，你可以在目录　`tensorflow-master/tensorflow/contrib/makefile／gen/lib` 下找到一个静态库：`libtensorflow-core.a` ，把这个静态库拷贝到 camera 项目中，然后编译运行。
 
 <br>
-转载请注明：[潘柏信的博客](http://baixin) » [点击阅读原文]()     
 
 
 

@@ -4,7 +4,7 @@ title: "Git教程"
 date: 2016-07-13   
 tag: 工具 
 ---
-
+*本文转载自：[潘柏信的博客](http://baixin.io/2016/07/GitTutorial/)*
 ### 介绍       
 
 　　Git是做项目的版本管理，你也可以称它们为版本管理工具。假如现在你有一个文件夹，里面可以是项目，也可以是你的个人笔记(如我这个博客)，或者是你的简历、毕业设计等等，都可以使用git来管理。
@@ -66,6 +66,4 @@ git branc 查看时如出现
 然后切换到 dev 分支上，在使用 git branch merge temp，就可以把 temp 分支上的代码合并到 dev 上了。
 
 <br>
-
-转载请注明：[潘柏信的博客](http://baixin) » [点击阅读原文](http://baixin.io/2016/07/GitTutorial/)     
 
