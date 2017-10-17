@@ -4,7 +4,7 @@ title: 使用 TensorFlow 实现神经网络
 date: 2016-11-20 
 tags: 机器学习  
 ---
-    *本文转载自：[潘柏信的博客](http://baixin.io/2016/11/neural_networks_using_TensorFlow/)*
+*本文转载自：[潘柏信的博客](http://baixin.io/2016/11/neural_networks_using_TensorFlow/)*
 
 ## 介绍
 

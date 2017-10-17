@@ -4,7 +4,7 @@ title: Markdown工具集
 date: 2016-11-20 
 tags: 工具    
 ---
-    *本文转载自：[潘柏信的博客](http://baixin.io/2016/11/markdownTool/)*
+*本文转载自：[潘柏信的博客](http://baixin.io/2016/11/markdownTool/)*
 
 ### 什么是 Markdown
 
