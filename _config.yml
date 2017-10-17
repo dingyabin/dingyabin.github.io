@@ -10,8 +10,8 @@ url: "http://www.dingyabin.com"
 
 # Comment
 comment:
-    disqus: leopard
-    # uyan: 2143225  # 有言id,登录有言官网申请
+     #disqus: leopard
+     uyan: 2146731  # 有言id,登录有言官网申请
 
 # Social
 social:
@@ -26,9 +26,9 @@ baidu:
 
 # Google Analytics
 # 使用博客模板请去掉或者更换 id
-ga:
-    id: UA-84134159-3   
-    host: auto  
+#ga:
+#    id: UA-84134159-3
+#    host: auto
 
 
 # 《----------------- 上面的信息修改成你自己的 ---------------------------》
