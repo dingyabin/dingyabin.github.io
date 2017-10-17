@@ -4,7 +4,8 @@ title: TensorFlow 在 iOS 平台上的使用(一)
 date: 2016-11-03 
 tags: 机器学习    
 ---
-    *本文转载自：[潘柏信的博客](http://baixin.io/2016/08/TensorFlowOniOSUse1/)*
+   *本文转载自：[潘柏信的博客](http://baixin.io/2016/08/TensorFlowOniOSUse1/)*
+
 　　tensorflow [下载地址](https://github.com/tensorflow/tensorflow/archive/master.zip)，tensorflow 最近提交的时间：2016-11-03，commit：`7b7c02de56e013482b5fe5ab05e576dc98fe5742` 。
 
 
