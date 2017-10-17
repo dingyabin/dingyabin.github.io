@@ -11,7 +11,7 @@ url: "http://www.dingyabin.com"
 # Comment
 comment:
      uyan: 2146731  # 有言id,登录有言官网申请
-     authId: 3018e31b07
+     authId: 3018e31b07 # 有言验证id
 
 # Social
 social:
