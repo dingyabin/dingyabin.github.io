@@ -38,11 +38,11 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 }
 ```
 　　从上面的代码可以得知，ThreadPoolExecutor继承了AbstractExecutorService类，并提供了四个构造器，事实上，通过观察每个构造器的源码具体实现，发现前面三个构造器都是调用的第四个构造器进行的初始化工作。
-下面解释下一下构造器中各个参数的含义：
-`corePoolSize`：核心池的大小，这个参数跟后面讲述的线程池的实现原理有非常大的关系。在创建了线程池后，默认情况下，线程池中并没有任何线程，而是等待有任务到来才创建线程去执行任务，除非调用了prestartAllCoreThreads()或者prestartCoreThread()方法，从这2个方法的名字就可以看出，是预创建线程的意思，即在没有任务到来之前就创建corePoolSize个线程或者一个线程。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中；
-`maximumPoolSize`：线程池最大线程数，这个参数也是一个非常重要的参数，它表示在线程池中最多能创建多少个线程；
-`keepAliveTime`：表示线程没有任务执行时最多保持多久时间会终止。默认情况下，只有当线程池中的线程数大于corePoolSize时，keepAliveTime才会起作用，直到线程池中的线程数不大于corePoolSize，即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。但是如果调用了allowCoreThreadTimeOut(boolean)方法，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的线程数为0；
-`unit`：参数keepAliveTime的时间单位，有7种取值，在TimeUnit类中有7种静态属性：
+下面解释下一下构造器中各个参数的含义：  
+`corePoolSize`：核心池的大小，这个参数跟后面讲述的线程池的实现原理有非常大的关系。在创建了线程池后，默认情况下，线程池中并没有任何线程，而是等待有任务到来才创建线程去执行任务，除非调用了prestartAllCoreThreads()或者prestartCoreThread()方法，从这2个方法的名字就可以看出，是预创建线程的意思，即在没有任务到来之前就创建corePoolSize个线程或者一个线程。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中；    
+`maximumPoolSize`：线程池最大线程数，这个参数也是一个非常重要的参数，它表示在线程池中最多能创建多少个线程；  
+`keepAliveTime`：表示线程没有任务执行时最多保持多久时间会终止。默认情况下，只有当线程池中的线程数大于corePoolSize时，keepAliveTime才会起作用，直到线程池中的线程数不大于corePoolSize，即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。但是如果调用了allowCoreThreadTimeOut(boolean)方法，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的线程数为0；  
+`unit`：参数keepAliveTime的时间单位，有7种取值，在TimeUnit类中有7种静态属性：  
 
 ```
 TimeUnit.DAYS; //天
@@ -151,23 +151,23 @@ shutdownNow()
 ### 深入剖析线程池实现原理
 　　在上一节我们从宏观上介绍了ThreadPoolExecutor，下面我们来深入解析一下线程池的具体实现原理，将从下面几个方面讲解：
 
-> * 线程池状态  
-> * 任务的执行  
-> * 线程池中的线程初始化  
-> * 任务缓存队列及排队策略  
-> * 任务拒绝策略  
-> * 线程池的关闭  
-> * 线程池容量的动态调整  
+>* 线程池状态  
+>* 任务的执行  
+>* 线程池中的线程初始化  
+>* 任务缓存队列及排队策略  
+>* 任务拒绝策略  
+>* 线程池的关闭  
+>* 线程池容量的动态调整  
 
  
 
 ####线程池状态
 　　在ThreadPoolExecutor中定义了一个volatile变量，另外定义了几个static final变量表示线程池的各个状态：  
-> *volatile int runState;  
-> *static final int RUNNING = 0;  
-> *static final int SHUTDOWN = 1;  
-> *static final int STOP = 2;  
-> *static final int TERMINATED = 3;
+>* volatile int runState;  
+>* static final int RUNNING = 0;  
+>* static final int SHUTDOWN = 1;  
+>* static final int STOP = 2;  
+>* static final int TERMINATED = 3;
   
 `runState`表示当前线程池的状态，它是一个volatile变量用来保证线程之间的可见性；  
 下面的几个static final变量表示runState可能的几个取值。    
