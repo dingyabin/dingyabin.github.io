@@ -7,11 +7,11 @@ tags: 网络协议
 ### Http
 
 　　HyperText Transfer Protocol，超文本传输协议，是互联网上使用最广泛的一种协议，所有WWW文件必须遵循的标准。HTTP协议传输的数据都是未加密的，也就是明文的，因此使用HTTP协议传输隐私信息非常不安全。  
-使用TCP端口为：`80` 
+　　使用TCP端口为：`80` 
 
 ### Https
 　　Hyper Text Transfer Protocol over Secure Socket Layer，安全的超文本传输协议，网景公式设计了SSL(Secure Sockets Layer)协议用于对Http协议传输的数据进行加密，保证会话过程中的安全性。  
-使用TCP端口默认为:`443`  
+　　使用TCP端口默认为:`443`  
 ### SSL协议加密方式
 
 　　SSL协议即用到了对称加密也用到了非对称加密(公钥加密)，在建立传输链路时，SSL首先对对称加密的密钥使用公钥进行非对称加密，链路建立好之后，SSL对传输内容使用对称加密     
