@@ -68,7 +68,7 @@ ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。
 ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
 ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务
 ```
-　　具体参数的配置与线程池的关系将在下一节讲述。
+　　具体参数的配置与线程池的关系将在下一节讲述。    
 　　从上面给出的ThreadPoolExecutor类的代码可以知道，ThreadPoolExecutor继承了AbstractExecutorService，我们来看一下AbstractExecutorService的实现：
 ```
 public abstract class AbstractExecutorService implements ExecutorService {
@@ -130,26 +130,26 @@ public interface Executor {
     void execute(Runnable command);
 }
 ```
-到这里，大家应该明白了ThreadPoolExecutor、AbstractExecutorService、ExecutorService和Executor几个之间的关系了。
+　　到这里，大家应该明白了ThreadPoolExecutor、AbstractExecutorService、ExecutorService和Executor几个之间的关系了。
 Executor是一个顶层接口，在它里面只声明了一个方法execute(Runnable)，返回值为void，参数为Runnable类型，从字面意思可以理解，就是用来执行传进去的任务的；
 然后ExecutorService接口继承了Executor接口，并声明了一些方法：submit、invokeAll、invokeAny以及shutDown等；
 抽象类AbstractExecutorService实现了ExecutorService接口，基本实现了ExecutorService中声明的所有方法；
-然后ThreadPoolExecutor继承了类AbstractExecutorService。
-在ThreadPoolExecutor类中有几个非常重要的方法：
+然后ThreadPoolExecutor继承了类AbstractExecutorService。  
+　　在ThreadPoolExecutor类中有几个非常重要的方法：
 ```
 execute()
 submit()
 shutdown()
 shutdownNow()
 ```
-execute()方法实际上是Executor中声明的方法，在ThreadPoolExecutor进行了具体的实现，这个方法是ThreadPoolExecutor的核心方法，通过这个方法可以向线程池提交一个任务，交由线程池去执行。
-submit()方法是在ExecutorService中声明的方法，在AbstractExecutorService就已经有了具体的实现，在ThreadPoolExecutor中并没有对其进行重写，这个方法也是用来向线程池提交任务的，但是它和execute()方法不同，它能够返回任务执行的结果，去看submit()方法的实现，会发现它实际上还是调用的execute()方法，只不过它利用了Future来获取任务执行结果（Future相关内容将在下一篇讲述）。
-shutdown()和shutdownNow()是用来关闭线程池的。
-还有很多其他的方法：
+`execute()`方法实际上是Executor中声明的方法，在ThreadPoolExecutor进行了具体的实现，这个方法是ThreadPoolExecutor的核心方法，通过这个方法可以向线程池提交一个任务，交由线程池去执行。  
+`submit()`方法是在ExecutorService中声明的方法，在AbstractExecutorService就已经有了具体的实现，在ThreadPoolExecutor中并没有对其进行重写，这个方法也是用来向线程池提交任务的，但是它和execute()方法不同，它能够返回任务执行的结果，去看submit()方法的实现，会发现它实际上还是调用的execute()方法，只不过它利用了Future来获取任务执行结果（Future相关内容将在下一篇讲述）。
+`shutdown()`和`shutdownNow()`是用来关闭线程池的。  
+还有很多其他的方法：  
 比如：getQueue() 、getPoolSize() 、getActiveCount()、getCompletedTaskCount()等获取与线程池相关属性的方法，有兴趣的朋友可以自行查阅API。
 
 ### 深入剖析线程池实现原理
-在上一节我们从宏观上介绍了ThreadPoolExecutor，下面我们来深入解析一下线程池的具体实现原理，将从下面几个方面讲解：
+　　在上一节我们从宏观上介绍了ThreadPoolExecutor，下面我们来深入解析一下线程池的具体实现原理，将从下面几个方面讲解：
 
 > * 线程池状态  
 > * 任务的执行  
@@ -161,33 +161,27 @@ shutdown()和shutdownNow()是用来关闭线程池的。
 
  
 
-1.线程池状态
-
-在ThreadPoolExecutor中定义了一个volatile变量，另外定义了几个static final变量表示线程池的各个状态：
-volatile int runState;
-static final int RUNNING = 0;
-static final int SHUTDOWN = 1;
-static final int STOP = 2;
-static final int TERMINATED = 3;
-runState表示当前线程池的状态，它是一个volatile变量用来保证线程之间的可见性；
-
-下面的几个static final变量表示runState可能的几个取值。
-
-当创建线程池后，初始时，线程池处于RUNNING状态；
-
-如果调用了shutdown()方法，则线程池处于SHUTDOWN状态，此时线程池不能够接受新的任务，它会等待所有任务执行完毕；
-
-如果调用了shutdownNow()方法，则线程池处于STOP状态，此时线程池不能接受新的任务，并且会去尝试终止正在执行的任务；
-
+####线程池状态
+　　在ThreadPoolExecutor中定义了一个volatile变量，另外定义了几个static final变量表示线程池的各个状态：  
+> *volatile int runState;  
+> *static final int RUNNING = 0;  
+> *static final int SHUTDOWN = 1;  
+> *static final int STOP = 2;  
+> *static final int TERMINATED = 3;
+  
+`runState`表示当前线程池的状态，它是一个volatile变量用来保证线程之间的可见性；  
+下面的几个static final变量表示runState可能的几个取值。    
+当创建线程池后，初始时，线程池处于RUNNING状态；    
+如果调用了shutdown()方法，则线程池处于SHUTDOWN状态，此时线程池不能够接受新的任务，它会等待所有任务执行完毕；  
+如果调用了shutdownNow()方法，则线程池处于STOP状态，此时线程池不能接受新的任务，并且会去尝试终止正在执行的任务；  
 当线程池处于SHUTDOWN或STOP状态，并且所有工作线程已经销毁，任务缓存队列已经清空或执行结束后，线程池被设置为TERMINATED状态。
 
-2.任务的执行
-
-在了解将任务提交给线程池到任务执行完毕整个过程之前，我们先来看一下ThreadPoolExecutor类中其他的一些比较重要成员变量：
-private final BlockingQueue<Runnable> workQueue;              //任务缓存队列，用来存放等待执行的任务
-private final ReentrantLock mainLock = new ReentrantLock();   //线程池的主要状态锁，对线程池状态（比如线程池大小
-                                                              //、runState等）的改变都要使用这个锁
-private final HashSet<Worker> workers = new HashSet<Worker>();  //用来存放工作集
+####任务的执行
+　　在了解将任务提交给线程池到任务执行完毕整个过程之前，我们先来看一下ThreadPoolExecutor类中其他的一些比较重要成员变量：
+```
+private final BlockingQueue<Runnable> workQueue;                 //任务缓存队列，用来存放等待执行的任务
+private final ReentrantLock mainLock = new ReentrantLock();      //线程池的主要状态锁，对线程池状态（比如线程池大小,runState等）的改变都要使用这个锁
+private final HashSet<Worker> workers = new HashSet<Worker>();   //用来存放工作集
   
 private volatile long  keepAliveTime;    //线程存货时间   
 private volatile boolean allowCoreThreadTimeOut;   //是否允许为核心线程设置存活时间
@@ -203,32 +197,19 @@ private volatile ThreadFactory threadFactory;   //线程工厂，用来创建线
 private int largestPoolSize;   //用来记录线程池中曾经出现过的最大线程数
   
 private long completedTaskCount;   //用来记录已经执行完毕的任务个数
+```
 每个变量的作用都已经标明出来了，这里要重点解释一下corePoolSize、maximumPoolSize、largestPoolSize三个变量。
-
 corePoolSize在很多地方被翻译成核心池大小，其实我的理解这个就是线程池的大小。举个简单的例子：
-
 假如有一个工厂，工厂里面有10个工人，每个工人同时只能做一件任务。
-
 因此只要当10个工人中有工人是空闲的，来了任务就分配给空闲的工人做；
-
 当10个工人都有任务在做时，如果还来了任务，就把任务进行排队等待；
-
 如果说新任务数目增长的速度远远大于工人做任务的速度，那么此时工厂主管可能会想补救措施，比如重新招4个临时工人进来；
-
 然后就将任务也分配给这4个临时工人做；
-
 如果说着14个工人做任务的速度还是不够，此时工厂主管可能就要考虑不再接收新的任务或者抛弃前面的一些任务了。
-
 当这14个工人当中有人空闲时，而新任务增长的速度又比较缓慢，工厂主管可能就考虑辞掉4个临时工了，只保持原来的10个工人，毕竟请额外的工人是要花钱的。
-
- 
-
 这个例子中的corePoolSize就是10，而maximumPoolSize就是14（10+4）。
-
 也就是说corePoolSize就是线程池大小，maximumPoolSize在我看来是线程池的一种补救措施，即任务量突然过大时的一种补救措施。
-
 不过为了方便理解，在本文后面还是将corePoolSize翻译成核心池大小。
-
 largestPoolSize只是一个用来起记录作用的变量，用来记录线程池中曾经有过的最大线程数目，跟线程池的容量没有任何关系。
 
  
@@ -517,7 +498,8 @@ private boolean addIfUnderMaximumPoolSize(Runnable firstTask) {
 如果当前线程池中的线程数目>=corePoolSize，则每来一个任务，会尝试将其添加到任务缓存队列当中，若添加成功，则该任务会等待空闲线程将其取出去执行；若添加失败（一般来说是任务缓存队列已满），则会尝试创建新的线程去执行这个任务；
 如果当前线程池中的线程数目达到maximumPoolSize，则会采取任务拒绝策略进行处理；
 如果线程池中的线程数量大于 corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止，直至线程池中的线程数目不大于corePoolSize；如果允许为核心池中的线程设置存活时间，那么核心池中的线程空闲时间超过keepAliveTime，线程也会被终止。
-3.线程池中的线程初始化
+
+#### 线程池中的线程初始化
 
 默认情况下，创建线程池之后，线程池中是没有线程的，需要提交任务之后才会创建线程。
 
@@ -542,7 +524,7 @@ public int prestartAllCoreThreads() {
 r = workQueue.take();
 即等待任务队列中有任务。
 
-4.任务缓存队列及排队策略
+#### 任务缓存队列及排队策略
 
 在前面我们多次提到了任务缓存队列，即workQueue，它用来存放等待执行的任务。
 
@@ -554,14 +536,14 @@ workQueue的类型为BlockingQueue<Runnable>，通常可以取下面三种类型
 
 3）synchronousQueue：这个队列比较特殊，它不会保存提交的任务，而是将直接新建一个线程来执行新来的任务。
 
-5.任务拒绝策略
+#### 任务拒绝策略
 
 当线程池的任务缓存队列已满并且线程池中的线程数目达到maximumPoolSize，如果还有任务到来就会采取任务拒绝策略，通常有以下四种策略：
 ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。
 ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。
 ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
 ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务
-6.线程池的关闭
+#### 线程池的关闭
 
 ThreadPoolExecutor提供了两个方法，用于线程池的关闭，分别是shutdown()和shutdownNow()，其中：
 
