@@ -187,7 +187,7 @@ public void insert(){
 	   
 ```
 注意`retVal = invocation.proceedWithInvocation() `这行，这行的意思是继续执行下一个切面增强类的处理，直到最后的被代理类的被代理方法返回结果, 这行代码之前，spring
-进行了一些列的初始化操作，其中`createTransactionIfNecessary(tm, txAttr, joinpointIdentification)`即为开启了一个事务，顺着往下走，看看createTransactionIfNecessary方法做了啥：
+进行了一些列的初始化操作，其中createTransactionIfNecessary(tm, txAttr, joinpointIdentification)即为开启了一个事务，顺着往下走，看看createTransactionIfNecessary方法做了啥：
 ```
 	protected TransactionInfo createTransactionIfNecessary(PlatformTransactionManager tm, TransactionAttribute txAttr, final String joinpointIdentification) {
 
@@ -214,8 +214,7 @@ public void insert(){
 		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
 	}
 ```
-这里调用了`tm.getTransaction(txAttr)`来开启事务,由于这里的`tm`我们一般使用的是`org.springframework.jdbc.datasource.DataSourceTransactionManager`,直接进去看
-`DataSourceTransactionManager`的`getTransaction()`方法:
+这里调用了`tm.getTransaction(txAttr)`来开启事务,由于这里的`tm`我们一般使用的是`DataSourceTransactionManager`,直接进去看`DataSourceTransactionManager`的`getTransaction()`方法:
 ```
 	public final TransactionStatus getTransaction(TransactionDefinition definition) throws TransactionException {
 	
@@ -281,8 +280,8 @@ public void insert(){
 		}
 	}
 ```
-由于第一次开启事务时，上一步获得的ConnectionHolder为null，所以从dataSource获取了一个新的Connection包装成ConnectionHolder放入了放入txObject中，
-并标记为true:一个新的ConnectionHolder; 紧接着判断是一个新的ConnectionHolder的话，用`TransactionSynchronizationManager.bindResource()`方法绑定到线程里。
+由于第一次开启事务时，上一步获得的ConnectionHolder为null，所以从dataSource获取了一个新的Connection包装成ConnectionHolder放入txObject中，
+并标记为true(一个新的ConnectionHolder); 紧接着判断是一个新的ConnectionHolder的话，用`TransactionSynchronizationManager.bindResource()`方法绑定到线程里。
 还记得上面的doGetTransaction()方法里用TransactionSynchronizationManager.getResource()获取连接么,如果是同一个线程，再次进入执行的话就会获取到同一个ConnectionHolder，
 在后面的isExistingTransaction方法也可以判定为是已有的transaction，于是后面的操作就都复用同一个connect了，发生异常时只要connect.rollback()一下，就会使前面的操作都回滚。
 
