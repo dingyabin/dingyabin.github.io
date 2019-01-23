@@ -192,17 +192,17 @@ Immutable集合使用方法：
 
 |方法	                    |                描述  |
 |Splitter.on(char)          |        按单个字符拆分|
-|Splitter.on(String)|按字符串拆分|
+|Splitter.on(String)        |按字符串拆分|
 |Splitter.on(Pattern);　　Splitter.onPattern(String)|按正则表达式拆分|
 |Splitter.fixedLength(int)|按固定长度拆分；最后一段可能比给定长度短|  
+
 #### 拆分器修饰符   
  
 |方法	                        |描述    |
 |omitEmptyStrings()| 从结果中自动忽略空字符串|
 |trimResults()| 移除结果字符串的前导空白和尾部空白|
 |limit(int)|  限制拆分出的字符串数量|
-|withKeyValueSeparator(String)|	String拆分为map时key和value的连接符 eg：Splitter.on("&").withKeyValueSeparator("=")
-                   .split("a=1&b=2");//返回值为map|
+|withKeyValueSeparator(String)|	String拆分为map时key和value的连接符 eg：Splitter.on("&").withKeyValueSeparator("=").split("a=1&b=2");//返回值为map|
 
 #### 连接器  
 ```
