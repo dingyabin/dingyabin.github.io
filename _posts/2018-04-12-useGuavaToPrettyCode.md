@@ -7,7 +7,7 @@ tags: guava
 
 ### Google collection
 
-	过滤
+####	过滤
 
 `按照条件过滤`
 ```
@@ -29,7 +29,7 @@ Map<String,Integer> m2 = Maps.transformValues(map,new Function<Integer, Integer>
         });
 System.out.println(m2);   //{begin=13, code=15}
 ```
-	Set
+####	Set
 ```
 HashSet setA = newHashSet(1, 2, 3, 4, 5);  
 HashSet setB = newHashSet(4, 5, 6, 7, 8);  
@@ -44,7 +44,7 @@ SetView intersection = Sets.intersection(setA, setB);  //交集
 System.out.println("intersection:");   //intersection:45
 ```
 
-	Map
+####	Map
 ```
 MapDifference differenceMap = Maps.difference(mapA, mapB);  
 MapDifference differenceMap=Maps.difference(mapA,mapB, Equivalence<? super V> valueEquivalence); 
@@ -55,7 +55,7 @@ Map<K,V> entriesOnlyOnRight = differenceMap.entriesOnlyOnRight(); //只有右边
 Map<K,V> entriesInCommon = differenceMap.entriesInCommon();//相同map
 ```
 
-	Multimap（没有实现 Map 的接口）  
+####	Multimap（没有实现 Map 的接口）  
 　　就是一个 key 对应多个 value 的数据结构。看上去它很像 java.util.Map 的结构，但是 Muitimap 不是 Map，没有实现 Map 的接口。
 设想你对 Map 调了 2 次参数 key 一样的 put 方法，结果就是第 2 次的 value 覆盖了第 1 次的 value。但是对 Multimap 来说这个 key 同时对应了 2 个 value。所以 Map 看上去是 : {k1=v1, k2=v2,...}，而 Multimap 是 :{k1=[v1, v2, v3], k2=[v7, v8],....}。
 
@@ -68,7 +68,7 @@ Multimap 接口的主要实现类有：
 `TreeMultimap`: key 放在 TreeMap，而 value 放在 TreeSet，即一个 key 对应的 value 有排列顺序  
 `create()`方法创建；
 
-	Multiset: 把重复的元素放入集合(没有实现set接口)  
+####	Multiset: 把重复的元素放入集合(没有实现set接口)  
 　　事实上，Multiset 并没有实现 Java.util.Set 接口，普通的 Set 就像这样 :[car, ship, bike]，而 Multiset 会是这样 : [car x 2, ship x 6, bike x 3]。
 ```      
 HashMultiset<String> multiSet = HashMultiset.create();
@@ -85,7 +85,7 @@ System.out.println(multiSet.count("s"));//4
 `EnumMultiset`: 元素必须是 enum 类型  
 `ImmutableMultiset`: 不可修改的 Mutiset  
 
-	BiMap: 双向 Map（实现了 Map 的接口）  
+####	BiMap: 双向 Map（实现了 Map 的接口）  
 　　它的特点是它的 value 和它 key 一样也是不可重复的，换句话说它的 key 和 value 是等价的。如果你往BiMap的value里面放了重复的元素，就会得到 IllegalArgumentException。
 ```
 BiMap<K, V> inverse = biMap.inverse().get();
@@ -107,7 +107,7 @@ System.out.println(r);
 inverse.put("ee","mm");
 System.out.println(map);//{s=b, mm=ee}
 ```
-	Table
+####	Table
 
 　　当我们需要多个索引的数据结构的时候，通常情况下，我们只能用Map<FirstName, Map<LastName, Person>>来实现。
 为此Guava提供了一个新的集合类型－Table集合类型，来支持这种数据结构的使用场景。Table支持"row"和"column"，而且提供多种视图。
@@ -145,11 +145,11 @@ public void TableTest(){
         System.out.println(aTable.remove("B", 3));// B3
     }
 ```
- Immutable(不可变)集合  
+#### Immutable(不可变)集合  
 　　 不可变集合，顾名思义就是说集合是不可被修改的。集合的数据项是在创建的时候提供，并且在整个生命周期中都不可改变。  
 　　 Immutable对象有以下的优点：
->* 线程安全的,immutable对象在多线程下安全，没有竞态条件;     
->* 不需要支持可变性, 可以尽量节省空间和时间的开销. 所有的不可变集合实现都比可变集合更加有效的利用内存;    
+* 线程安全的,immutable对象在多线程下安全，没有竞态条件;     
+* 不需要支持可变性, 可以尽量节省空间和时间的开销. 所有的不可变集合实现都比可变集合更加有效的利用内存;    
 ```
       在JDK中提供了Collections.unmodifiableXXX系列方法来实现不可变集合, 但是存在一些问题
       Set<String> set = new HashSet<String>();
@@ -160,12 +160,12 @@ public void TableTest(){
       System.out.println(unmodSet);//aa,vv
 ```
 Immutable集合使用方法：  
->* 1.用copyOf方法:  
+* 1.用copyOf方法:  
      ImmutableSet.copyOf(set)
->* 2.使用of方法  
+* 2.使用of方法  
 　　 ImmutableSet.of("a", "b", "c")  
 　　 ImmutableMap.of("a", 1, "b", 2)  
->* 3.使用Builder类  
+* 3.使用Builder类  
 　　 ImmutableSet.Builder<String> builder =ImmutableSet.builder();   
 　　 builder.add("1").build();
 
@@ -188,57 +188,45 @@ Immutable集合使用方法：
                                 .omitEmptyStrings()
                                 .splitToList("foo,bar,qux");
 ``` 
-拆分器工厂  
-
+#### 拆分器工厂  
 |方法	                    |                描述  |
 |Splitter.on(char)          |        按单个字符拆分|
 |Splitter.on(String)|按字符串拆分|
-|Splitter.on(Pattern);Splitter.onPattern(String)|按正则表达式拆分|
-|Splitter.fixedLength(int)|按固定长度拆分；最后一段可能比给定长度短|
+|Splitter.on(Pattern);　　Splitter.onPattern(String)|按正则表达式拆分|
+|Splitter.fixedLength(int)|按固定长度拆分；最后一段可能比给定长度短|  
+#### 拆分器修饰符    
+|方法	                        |描述    |
+|omitEmptyStrings()| 从结果中自动忽略空字符串|
+|trimResults()| 移除结果字符串的前导空白和尾部空白|
+|limit(int)|  限制拆分出的字符串数量|
+|withKeyValueSeparator(String)|	String拆分为map时key和value的连接符 eg：Splitter.on("&").withKeyValueSeparator("=")
+                   .split("a=1&b=2");//返回值为map|
 
-拆分器修饰符
-方法	描述
-omitEmptyStrings()
-从结果中自动忽略空字符串
-trimResults()
-移除结果字符串的前导空白和尾部空白
-limit(int)
-限制拆分出的字符串数量
-withKeyValueSeparator(String)	String拆分为map时key和value的连接符 eg：
-Splitter.on("&").withKeyValueSeparator("=")
-                   .split("a=1&b=2");//返回值为map
-
-
-
-
-连接器[Joiner]
+#### 连接器  
+```
 Joiner joiner = Joiner.on("_");
 joiner.join("1","2","3");//1_2_3
-
-  如果字符串序列中含有null:
+//如果字符串序列中含有null:
 Joiner joiner = Joiner.on("_").skipNulls();
 joiner.join("1","2","3",null);//1_2_3
-
-  替换null:
-         			Joiner joiner = Joiner.on("_").useForNull("*");
+//替换null:
+Joiner joiner = Joiner.on("_").useForNull("*");
 joiner.join("1","2","3",null);//1_2_3_*
-
-  拼接Map     			
-                 Joiner.MapJoinerjoiner=Joiner.on("&")
-                                           .withKeyValueSeparator("=");
-        joiner.join(ImmutableMap.of("a", "1", "b", "2"));//a=1&b=2
-
- 连接对象类型，在这种情况下，会把对象的toString()值连接起来。
+//拼接Map     			
+Joiner.MapJoiner joiner=Joiner.on("&").withKeyValueSeparator("=");
+joiner.join(ImmutableMap.of("a", "1", "b", "2"));//a=1&b=2
+//连接对象类型，在这种情况下，会把对象的toString()值连接起来。
 Joiner.on(",").join(Arrays.asList(1,5,7));//1,5,7  
-
+```  
  joiner实例总是不可变的。用来定义joiner目标语义的配置方法总会返回一个新的                               joiner实例。
 
-文件操作
-
+### 文件操作
+```
 Files.copy(from,to);  //复制文件
 Files.write(content, file, Charsets.UTF_8);  //写入文件
 Files.toByteArray(File file) //读取字节数组
 Files.readLines(File file, Charset charset); //从文件中读取内容
 Files.move(File from, File to); //移动文件
 URL url = Resources.getResource("abc.xml"); //获取classpath下的文件url
+```
 还有许多方法可以用............
