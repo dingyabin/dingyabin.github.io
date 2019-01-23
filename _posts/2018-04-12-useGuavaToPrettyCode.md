@@ -189,12 +189,14 @@ Immutable集合使用方法：
                                 .splitToList("foo,bar,qux");
 ``` 
 #### 拆分器工厂  
+
 |方法	                    |                描述  |
 |Splitter.on(char)          |        按单个字符拆分|
 |Splitter.on(String)|按字符串拆分|
 |Splitter.on(Pattern);　　Splitter.onPattern(String)|按正则表达式拆分|
 |Splitter.fixedLength(int)|按固定长度拆分；最后一段可能比给定长度短|  
-#### 拆分器修饰符    
+#### 拆分器修饰符   
+ 
 |方法	                        |描述    |
 |omitEmptyStrings()| 从结果中自动忽略空字符串|
 |trimResults()| 移除结果字符串的前导空白和尾部空白|
