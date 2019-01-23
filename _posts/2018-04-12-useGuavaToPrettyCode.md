@@ -113,7 +113,7 @@ System.out.println(map);//{s=b, mm=ee}
 为此Guava提供了一个新的集合类型－Table集合类型，来支持这种数据结构的使用场景。Table支持"row"和"column"，而且提供多种视图。
 Table：相当于有两个key的map
 
-
+```
 /**
 *    A  1  A1
 *    A  2  A2
@@ -126,7 +126,6 @@ Table：相当于有两个key的map
 *    C  3  C3
 *
 */
-```
 public void TableTest(){
         Table<String, Integer, String> aTable = HashBasedTable.create();   
         for (char a = 'A'; a <= 'C'; ++a) {  
