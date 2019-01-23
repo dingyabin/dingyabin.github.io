@@ -145,8 +145,7 @@ public void TableTest(){
     }
 ```
 #### Immutable(不可变)集合  
-　　 不可变集合，顾名思义就是说集合是不可被修改的。集合的数据项是在创建的时候提供，并且在整个生命周期中都不可改变。  
-　　 Immutable对象有以下的优点：
+　　 不可变集合，顾名思义就是说集合是不可被修改的。集合的数据项是在创建的时候提供，并且在整个生命周期中都不可改变, Immutable对象有以下的优点：  
 * 线程安全的,immutable对象在多线程下安全，没有竞态条件;     
 * 不需要支持可变性, 可以尽量节省空间和时间的开销. 所有的不可变集合实现都比可变集合更加有效的利用内存;    
 ```
@@ -160,12 +159,12 @@ public void TableTest(){
 ```
 Immutable集合使用方法：  
 * 1.用copyOf方法:  
-     ImmutableSet.copyOf(set)
+　　 ImmutableSet.copyOf(set)
 * 2.使用of方法  
 　　 ImmutableSet.of("a", "b", "c")  
 　　 ImmutableMap.of("a", 1, "b", 2)  
 * 3.使用Builder类  
-　　 ImmutableSet.Builder<String> builder =ImmutableSet.builder();   
+　　 ImmutableSet.Builder<String> builder =ImmutableSet.builder();     
 　　 builder.add("1").build();
 
 
@@ -231,3 +230,75 @@ Files.move(File from, File to); //移动文件
 URL url = Resources.getResource("abc.xml"); //获取classpath下的文件url
 ```
 还有许多方法可以用............
+
+### 使用guava实现异步回调
+```
+public class FutureCallbackExample {
+
+ public static void main(String[] args) throws Exception {
+        // 原生的Future模式,实现异步
+        ExecutorService nativeExecutor = Executors.newSingleThreadExecutor();
+        Future<String> nativeFuture = nativeExecutor.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                //使用sleep模拟调用耗时
+                TimeUnit.SECONDS.sleep(1);
+                return "This is native future call.not support async callback";
+            }
+        });
+        // Future只实现了异步，而没有实现回调.所以此时主线程get结果时阻塞.或者可以轮训以便获取异步调用是否完成
+        System.out.println(nativeFuture.get());
+
+
+        // 好的实现应该是提供回调,即异步调用完成后,可以直接回调.本例采用guava提供的异步回调接口,方便很多.
+        ListeningExecutorService guavaExecutor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+        ListenableFuture<String> listenableFuture = guavaExecutor.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                Thread.sleep(1000);
+                return "this is guava future call.support async callback";
+            }
+        });
+
+        // 注册监听器,即异步调用完成时会在指定的线程池中执行注册的监听器
+        listenableFuture.addListener(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("async complete.result:" + listenableFuture.get());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, Executors.newSingleThreadExecutor());
+        // 主线程可以继续执行,异步完成后会执行注册的监听器任务.
+        System.out.println("go on execute.asyn complete will callback");
+
+
+        // 除了ListenableFuture,guava还提供了FutureCallback接口,相对来说更加方便一些.
+        ListeningExecutorService guavaExecutor2 = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+        ListenableFuture<String> listenableFuture2 = guavaExecutor2.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                Thread.sleep(1000);
+                System.out.println("asyncThreadName:" + Thread.currentThread().getName());
+                return "this is guava future call.support async callback using FutureCallback";
+            }
+        });
+
+        // 注意这里没用指定执行回调的线程池，默认是和执行异步操作的线程是同一个.
+        //onSuccess与onFailure的判断依据是任务执行时有没有抛异常
+        Futures.addCallback(listenableFuture2, new FutureCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                System.out.println("async callback(using FutureCallback) result:" + result);
+                System.out.println("execute callback threadName:" + Thread.currentThread().getName());
+            }
+            @Override
+            public void onFailure(Throwable t) {
+            }
+        });
+    }
+}
+```
+
