@@ -214,7 +214,7 @@ public void insert(){
 		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
 	}
 ```
-这里调用了`tm.getTransaction(txAttr)`来开启事务,由于这里的`tm`我们一般使用的是`DataSourceTransactionManager`,直接进去看`DataSourceTransactionManager`的`getTransaction()`方法:
+　　这里调用了`tm.getTransaction(txAttr)`来开启事务,由于这里的`tm`我们一般使用的是`DataSourceTransactionManager`,直接进去看`DataSourceTransactionManager`的`getTransaction()`方法:
 ```
 	public final TransactionStatus getTransaction(TransactionDefinition definition) throws TransactionException {
 	
@@ -235,7 +235,7 @@ public void insert(){
                             .......
 	}
 ```
-源码太长，只截取了部分核心代码，进入方法，先委托doGetTransaction()拿到一个事务，然后调用isExistingTransaction()看看之前是不是已经存在一个事务了，如果之前没有事务，则doBegin(),开启事务。
+　　源码太长，只截取了部分核心代码，进入方法，先委托doGetTransaction()拿到一个事务，然后调用isExistingTransaction()看看之前是不是已经存在一个事务了，如果之前没有事务，则doBegin(),开启事务。
 先看看`doGetTransaction()`方法:
 ```
 	protected Object doGetTransaction() {
@@ -246,7 +246,7 @@ public void insert(){
 		return txObject;
 	}
 ```
-这里主要是根据dataSource来获取ConnectionHolder，这个ConnectionHolder是放在TransactionSynchronizationManager的ThreadLocal中持有的，此时如果是第一次来获取，肯定得到是null，
+　　这里主要是根据dataSource来获取ConnectionHolder，这个ConnectionHolder是放在TransactionSynchronizationManager的ThreadLocal中持有的，此时如果是第一次来获取，肯定得到是null，
 这里请记住`TransactionSynchronizationManager`这个类，后面会再遇到的。在看看doBegin()
 
 ```
@@ -280,7 +280,7 @@ public void insert(){
 		}
 	}
 ```
-由于第一次开启事务时，上一步获得的ConnectionHolder为null，所以从dataSource获取了一个新的Connection包装成ConnectionHolder放入txObject中，
+　　由于第一次开启事务时，上一步获得的ConnectionHolder为null，所以从dataSource获取了一个新的Connection包装成ConnectionHolder放入txObject中，
 并标记为true(一个新的ConnectionHolder); 紧接着判断是一个新的ConnectionHolder的话，用`TransactionSynchronizationManager.bindResource()`方法绑定到线程里。
 还记得上面的doGetTransaction()方法里用TransactionSynchronizationManager.getResource()获取连接么,如果是同一个线程，再次进入执行的话就会获取到同一个ConnectionHolder，
 在后面的isExistingTransaction方法也可以判定为是已有的transaction，于是后面的操作就都复用同一个connect了，发生异常时只要connect.rollback()一下，就会使前面的操作都回滚。
