@@ -287,7 +287,7 @@ public class FutureCallbackExample {
         });
 
         // 注意这里没用指定执行回调的线程池，默认是和执行异步操作的线程是同一个.
-        //onSuccess与onFailure的判断依据是任务执行时有没有抛异常
+        // onSuccess与onFailure的判断依据是任务执行时有没有抛异常
         Futures.addCallback(listenableFuture2, new FutureCallback<String>() {
             @Override
             public void onSuccess(String result) {
