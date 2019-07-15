@@ -86,12 +86,12 @@ select id from t where name <> 'Tom';
 
 3. 混合排序
   MySQL 不能利用索引进行混合排序。但在某些场景，还是有机会使用特殊方法提升性能的。
-`	SELECT * 
-	FROM   my_order o 
-	INNER JOIN my_appraise a ON a.orderid = o.id 
-	ORDER  BY a.is_reply ASC, 
-	          a.appraise_time DESC 
-	LIMIT  0, 20 `
+	`SELECT * 
+		FROM   my_order o 
+		INNER JOIN my_appraise a ON a.orderid = o.id 
+		ORDER  BY a.is_reply ASC, 
+			  a.appraise_time DESC 
+		LIMIT  0, 20 `
    由于 is_reply 只有0和1两种状态，按照下面的方法重写:
 			SELECT t.* 
 			   FROM   ((SELECT *
