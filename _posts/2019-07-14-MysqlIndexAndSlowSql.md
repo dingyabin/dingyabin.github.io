@@ -131,30 +131,30 @@ WHERE  target = 'rm-xxxx'
 GROUP  BY target`
 
 5. 提前缩小范围
-`SELECT * 
-	FROM   my_order o 
-	       LEFT JOIN my_userinfo u 
-	              ON o.uid = u.uid
-	       LEFT JOIN my_productinfo p 
-	              ON o.pid = p.pid 
-WHERE  ( o.display = 0 ) 
- AND   ( o.ostaus = 1  ) 
-ORDER  BY o.selltime DESC 
-LIMIT  0, 15 `
+	`SELECT * 
+		FROM   my_order o 
+		       LEFT JOIN my_userinfo u 
+			      ON o.uid = u.uid
+		       LEFT JOIN my_productinfo p 
+			      ON o.pid = p.pid 
+	WHERE  ( o.display = 0 ) 
+	 AND   ( o.ostaus = 1  ) 
+	ORDER  BY o.selltime DESC 
+	LIMIT  0, 15 `
 　　 该SQL语句原意是：先做一系列的左连接，然后排序取前15条记录。
 　　 由于最后 WHERE 条件以及排序均针对最左主表，因此可以先对 my_order 排序提前缩小数据量再做左连接
-`SELECT * 
-FROM 
-(
-	SELECT * 
-	FROM   my_order o 
-	WHERE  ( o.display = 0 ) 
-	       AND ( o.ostaus = 1 ) 
-	ORDER  BY o.selltime DESC 
-	LIMIT  0, 15
-	) o 
-     LEFT JOIN my_userinfo u 
-              ON o.uid = u.uid 
-     LEFT JOIN my_productinfo p 
-              ON o.pid = p.pid 
-ORDER BY  o.selltime DESC limit 0, 15`
+		`SELECT * 
+		FROM 
+		(
+			SELECT * 
+			FROM   my_order o 
+			WHERE  ( o.display = 0 ) 
+			       AND ( o.ostaus = 1 ) 
+			ORDER  BY o.selltime DESC 
+			LIMIT  0, 15
+			) o 
+		     LEFT JOIN my_userinfo u 
+			      ON o.uid = u.uid 
+		     LEFT JOIN my_productinfo p 
+			      ON o.pid = p.pid 
+		ORDER BY  o.selltime DESC limit 0, 15`
