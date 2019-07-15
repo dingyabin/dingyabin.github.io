@@ -53,5 +53,108 @@ select id from t where name <> 'Tom';
 >*  加缓存减少库的访问量，对于本身很慢的查询也是没有用的，布隆过滤器，guava，redis等
 
 ### 几个慢查询案例
+1. LIMIT 语句
+　　 分页查询是最常用的场景之一，但也通常也是最容易出问题的地方。比如对于下面简单的语句，一般想到的办法是在 type, name, create_time 
+字段上加组合索引。这样条件排序都能有效的利用到索引，性能迅速提升。
+`	SELECT * 
+	FROM   operation 
+	WHERE  type = 'SQLStats' 
+	       AND name = 'SlowLog' 
+	ORDER  BY create_time 
+	LIMIT  1000, 10;`
+　　 但当 LIMIT 子句变成 “LIMIT 1000000,10” 时，仍然会有性能问题,要知道数据库也并不知道第1000000条记录从什么地方开始，即使有索引也需要从头计算一次。
+　　 在前端数据浏览翻页，或者大数据分批导出等场景下，是可以将上一页的最大值当成参数作为查询条件的。SQL 重新设计如下：
+	`SELECT   * 
+	   FROM     operation 
+	WHERE    type = 'SQLStats' 
+	  AND      name = 'SlowLog' 
+	  AND      create_time > '2017-03-16 14:00:00' 
+	ORDER BY create_time limit 10;`
+　　 在新设计下查询时间基本固定，不会随着数据量的增长而发生变化。
+   
+2. 隐式转换
+　　 先看这样一个sql片段：
+　　` "AND is_deleted = 0  AND status =1 AND product.is_real !=2 AND unix_timestamp(product.end_time) > unix_timestamp(now()) "`
+	这样的sql比较容易发现问题，unix_timestamp函数作用在索引字段上，会时索引失效，但有时候mysql会在我们看不到的地方使用函数，导致索引失效。
+　　 比如SQL语句中查询变量和字段定义类型不匹配是一个常见的错误。比如下面的语句：
+		` SELECT * 
+		 FROM   my_balance b 
+		 WHERE  b.bpn = 14000000123 
+		 AND b.isverified IS NULL ;`
+   其中字段 bpn 的定义为 varchar(20)，MySQL 的策略是将字符串转换为数字之后再比较。函数作用于表字段，索引失效。
+述情况可能是应用程序框架自动填入的参数，而不是我们的原意。
 
+3. 混合排序
+  MySQL 不能利用索引进行混合排序。但在某些场景，还是有机会使用特殊方法提升性能的。
+`	SELECT * 
+	FROM   my_order o 
+	INNER JOIN my_appraise a ON a.orderid = o.id 
+	ORDER  BY a.is_reply ASC, 
+	          a.appraise_time DESC 
+	LIMIT  0, 20 `
+   由于 is_reply 只有0和1两种状态，按照下面的方法重写:
+			SELECT t.* 
+			   FROM   ((SELECT *
+			             FROM   my_order o 
+			                INNER JOIN my_appraise a 
+			                        ON a.orderid = o.id 
+			                           AND a.is_reply = 0 
+			         ORDER  BY appraise_time DESC 
+			         LIMIT  0, 20) 
 
+			        UNION ALL 
+
+			        (SELECT *
+			         FROM   my_order o 
+			                INNER JOIN my_appraise a 
+			                        ON a.orderid = o.id 
+			                           AND a.is_reply = 1 
+			         ORDER  BY appraise_time DESC 
+			         LIMIT  0, 20)) t    
+			 LIMIT  20;
+
+4. 条件下推
+` SELECT * 
+  FROM 
+    (SELECT 
+        target, Count(*) 
+       FROM   operation
+     GROUP  BY target
+    ) t  
+   WHERE 
+    target = 'rm-xxxx' `
+　　 确定从语义上查询条件可以直接下推后，重写如下：
+`SELECT target, 
+       Count(*) 
+FROM   operation 
+WHERE  target = 'rm-xxxx' 
+GROUP  BY target`
+
+5. 提前缩小范围
+`SELECT * 
+	FROM   my_order o 
+	       LEFT JOIN my_userinfo u 
+	              ON o.uid = u.uid
+	       LEFT JOIN my_productinfo p 
+	              ON o.pid = p.pid 
+WHERE  ( o.display = 0 ) 
+ AND   ( o.ostaus = 1  ) 
+ORDER  BY o.selltime DESC 
+LIMIT  0, 15 `
+　　 该SQL语句原意是：先做一系列的左连接，然后排序取前15条记录。
+　　 由于最后 WHERE 条件以及排序均针对最左主表，因此可以先对 my_order 排序提前缩小数据量再做左连接
+`SELECT * 
+FROM 
+(
+	SELECT * 
+	FROM   my_order o 
+	WHERE  ( o.display = 0 ) 
+	       AND ( o.ostaus = 1 ) 
+	ORDER  BY o.selltime DESC 
+	LIMIT  0, 15
+	) o 
+     LEFT JOIN my_userinfo u 
+              ON o.uid = u.uid 
+     LEFT JOIN my_productinfo p 
+              ON o.pid = p.pid 
+ORDER BY  o.selltime DESC limit 0, 15`
