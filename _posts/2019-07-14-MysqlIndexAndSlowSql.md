@@ -53,7 +53,7 @@ select id from t where name <> 'Tom';
 >*  加缓存减少库的访问量，对于本身很慢的查询也是没有用的，布隆过滤器，guava，redis等
 
 ### 几个慢查询案例
-1. LIMIT 语句
+#### 1. LIMIT 语句
 　　 分页查询是最常用的场景之一，但也通常也是最容易出问题的地方。比如对于下面简单的语句，一般想到的办法是在 type, name, create_time 
 字段上加组合索引。这样条件排序都能有效的利用到索引，性能迅速提升。
 ```
@@ -76,7 +76,7 @@ select id from t where name <> 'Tom';
 ```
 　　 在新设计下查询时间基本固定，不会随着数据量的增长而发生变化。
    
-2. 隐式转换
+#### 2. 隐式转换
 　　 先看这样一个sql片段：
 ```
      AND is_deleted = 0  AND status =1 AND product.is_real !=2 AND unix_timestamp(product.end_time) > unix_timestamp(now()) 
@@ -92,7 +92,7 @@ select id from t where name <> 'Tom';
    其中字段 bpn 的定义为 varchar(20)，MySQL 的策略是将字符串转换为数字之后再比较。函数作用于表字段，索引失效。
 述情况可能是应用程序框架自动填入的参数，而不是我们的原意。
 
-3. 混合排序
+#### 3. 混合排序
   MySQL 不能利用索引进行混合排序。但在某些场景，还是有机会使用特殊方法提升性能的。
 ```
      SELECT * 
@@ -124,7 +124,7 @@ select id from t where name <> 'Tom';
 			         LIMIT  0, 20)) t    
 			 LIMIT  20;
 ```
-4. 条件下推
+#### 4. 条件下推
 ```
 	SELECT * 
 	  FROM 
@@ -145,7 +145,7 @@ select id from t where name <> 'Tom';
 	GROUP  BY target
 ```
 
-5. 提前缩小范围
+#### 5. 提前缩小范围
 ```
          SELECT * 
 		FROM   my_order o 
