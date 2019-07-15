@@ -146,7 +146,8 @@ select id from t where name <> 'Tom';
 ```
 
 5. 提前缩小范围
-	`SELECT * 
+```
+         SELECT * 
 		FROM   my_order o 
 		       LEFT JOIN my_userinfo u 
 			      ON o.uid = u.uid
@@ -155,10 +156,12 @@ select id from t where name <> 'Tom';
 	WHERE  ( o.display = 0 ) 
 	 AND   ( o.ostaus = 1  ) 
 	ORDER  BY o.selltime DESC 
-	LIMIT  0, 15 `
+	LIMIT  0, 15 
+```
 　　 该SQL语句原意是：先做一系列的左连接，然后排序取前15条记录。
 　　 由于最后 WHERE 条件以及排序均针对最左主表，因此可以先对 my_order 排序提前缩小数据量再做左连接
-		`SELECT * 
+```
+        SELECT * 
 		FROM 
 		(
 			SELECT * 
@@ -172,4 +175,5 @@ select id from t where name <> 'Tom';
 			      ON o.uid = u.uid 
 		     LEFT JOIN my_productinfo p 
 			      ON o.pid = p.pid 
-		ORDER BY  o.selltime DESC limit 0, 15`
+		ORDER BY  o.selltime DESC limit 0, 15
+```
