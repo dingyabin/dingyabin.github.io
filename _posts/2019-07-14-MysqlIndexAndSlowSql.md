@@ -158,7 +158,7 @@ select id from t where name <> 'Tom';
 	ORDER  BY o.selltime DESC 
 	LIMIT  0, 15 
 ```
-　　 该SQL语句原意是：先做一系列的左连接，然后排序取前15条记录。
+　　 该SQL语句原意是：先做一系列的左连接，然后排序取前15条记录。 
 　　 由于最后 WHERE 条件以及排序均针对最左主表，因此可以先对 my_order 排序提前缩小数据量再做左连接
 ```
         SELECT * 
